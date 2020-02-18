@@ -7,7 +7,8 @@ class IndexerSimple():
     def __init__(self, collection):
         self.collection = collection
         self.index = None
-        self.inverseIndex = None
+        self.indexInverse = None
+        self.indexInverseNormalized = None
         
     def indexation(self):
         if(self.index == None ):
@@ -19,19 +20,18 @@ class IndexerSimple():
                 self.index[key] = pt.getTextRepresentation(docTexte)
             #Création index inversé pas normalisé
             self.indexInverse = {}
-            for numDoc in self.index:
-                for word in self.index[numDoc]:
+            for numDoc, dico in self.index.items():
+                for word, tf in dico.items():
                     if(word not in self.indexInverse):
                         self.indexInverse[word]= {}
-                    if(numDoc not in self.indexInverse[word]):
-                        self.indexInverse[word][numDoc]=1
-                    else:
-                        self.indexInverse[word][numDoc]+=1
-            #Normalisation de l'index inversé
+                    self.indexInverse[word][numDoc] = tf
+            #Index inversé normalisé
+            self.indexInverseNormalized = {}
             for key in self.indexInverse:
                 factor = 1.0/sum(self.indexInverse[key].values())
+                self.indexInverseNormalized[key] = {}
                 for k in self.indexInverse[key]:
-                    self.indexInverse[key][k] = factor*self.indexInverse[key][k]
+                    self.indexInverseNormalized[key][k] = factor*self.indexInverse[key][k]
                     
     def getTfsForDoc(self, docId):
         return self.index[docId]
