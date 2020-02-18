@@ -1,0 +1,1 @@
+#TODO: copier 3 dernieres ligne de code du tme1.ipynb
