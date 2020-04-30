@@ -1,3 +1,7 @@
+import numpy as np
+from collections import Counter
+import porter as p
+
 class Weighter():
     """
     Classe abstraite représentant le squelette d'une pondération.
@@ -123,5 +127,29 @@ class Weighter():
         :rtype: list[string]
         """
         return list(np.unique(list(map(p.stem, query.split())))) 
+
+
+class Weighter1(Weighter):
+    """
+    CF class Weighter
+    """
+    def getWeightsForDoc(self, idDoc):
+        """
+        CF class Weighter
+        """
+        return self.index[idDoc] #correspond aux tfs des termes du document
+    
+    def getWeightsForStem(self, stem):
+        """
+        CF class Weighter
+        """
+        return self.indexInverse[stem] if stem in self.indexInverse else {} #correspond aux tfs du terme pour chaque document
+    
+    def getWeightsForQuery(self, query):
+        """
+        CF class Weighter
+        """
+        #récupère chaque stem de la requete et lui attribut une valeur de 1 car np.unique est utilisé
+        return dict(Counter(np.unique(list(map(p.stem, query.split())))))
     
     

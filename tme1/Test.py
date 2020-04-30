@@ -1,1 +1,3 @@
-#TODO: copier 3 dernieres ligne de code du tme1.ipynb
+collec1 = Parser.parseCacmCisi('cacmShort-good.txt')
+indexer=IndexerSimple(collec1)
+indexer.indexation()

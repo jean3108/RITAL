@@ -61,3 +61,8 @@ class IndexerSimple():
     
     def getStrDoc(self, docId):
         return self.collection[docId].getTexte()
+    
+    def getIndex(self):
+        return index
+    def getIndexInv(self):
+        return indexInv
