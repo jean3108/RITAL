@@ -1,6 +1,9 @@
 import numpy as np
 from collections import Counter
 import porter as p
+from Weighter import Weighter, Weighter1
+from Document import Document
+
 
 class IRModel():
     """
@@ -111,3 +114,42 @@ class Vectoriel(IRModel):
                 else:
                     res[docId] += weightStem*weightDoc#On ajoute le produit des poids à l'ancienne valeur
         return res    
+
+class Okapi(IRModel):
+    def __init__(self, weighter, k1=1.2, b=0.75):
+        
+        super().__init__(weighter)
+        # constantes du modèle
+        self.k1 = k1
+        self.b = b
+        
+        #nombre de docs
+        self.nbDoc = len(weighter.index)
+        
+        #longueur moyenne des documents
+        self.avglen = np.mean([sum(list(index[idDoc].values())) for idDoc in range(len(docs))])
+        
+    def getScores(self, query):
+        res={}
+        #Récupère les termes de la requete
+        stems = Weighter.getStemsFromQuery(query)
+        #Pour chaque terme de la requete
+        for stem in stems:
+            #Calcul des éléments indépendant du document
+            # on considère le dénominateur en 2 parties indépendantes du document (il faut développer le dénominateur):
+            # 1) k1 * (1 - b)
+            # 2) k1 * b / avgdl 
+            idf = self.weighter.getIdf(stem)
+            denom1 = self.k1 * (1-self.b) 
+            denom2 = self.k1 * self.b / self.avglen #parie du dénomianteur que l'on multipliera par la longueur du doc
+            
+            docWeights = self.weighter.getWeightsForStem(stem)  #On récupère les poids du terme dans chaque document
+            for idDoc, weight in docWeights.items():
+                lenDoc = sum(self.weighter.index[idDoc].values()) #taille doc = nombre de terme avec doublon
+                #lenDoc = len(self.weighter.index[idDoc]) #taille du doc = nombre de terme différent
+                score = idf * weight / (weight + denom1 + denom2*lenDoc) #Formule okapi-BM25
+                if(idDoc not in res):
+                    res[idDoc] = score
+                else:
+                    res[idDoc] += score
+        return res
