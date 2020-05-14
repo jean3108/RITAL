@@ -3,8 +3,10 @@ from collections import Counter
 import porter as p
 import re
 from Weighter import Weighter1
-from IRModel import Vectoriel
+from IRModel import Vectoriel, Okapi
+from EvalMesure import NGCD
 from Parser import Parser
+from ParserQuery import ParserQuery
 from IndexerSimple import IndexerSimple
 
 class EvalIRModel():

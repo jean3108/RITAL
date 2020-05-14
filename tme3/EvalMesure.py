@@ -67,12 +67,18 @@ class NGCD(EvalMesure):
         
         #relevance of returned docs above
         rel = [1 if d in self.query.getDocspertinents() else 0 for d in scores]
+        nbRel = len(self.query.getDocspertinents()) #Nombre de dcos pertinents pour la requete
+        #import ipdb; ipdb.set_trace()
+        if nbRel < self.rang:
+            r = nbRel
+        else:
+            r = self.rang
         
         #sorted relevance rank
         sorted_rel = np.sort(rel, axis=0)[::-1]
-        metric = np.log([2+i for i in range(self.rang)])
-        dcg = np.sum(rel[:self.rang]/metric)
-        dcg_max = np.sum(sorted_rel[:self.rang]/metric)
+        metric = np.log([2+i for i in range(r)])
+        dcg = np.sum(rel[:r]/metric)
+        dcg_max = np.sum(sorted_rel[:r]/metric)
         
         if not dcg_max:
             return 0

@@ -1,3 +1,6 @@
+from Query import Query
+import re
+
 class ParserQuery():
     
     def parseQRY(chemin):

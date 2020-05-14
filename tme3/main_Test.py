@@ -15,11 +15,13 @@ PATH = 'cacm'
 evalIRModel = EvalIRModel(PATH)
 
 #Query/ Docs parsing (index creation)
+print("Query and Docs parsing ...")
 evalIRModel.parseQuery()
 evalIRModel.parseDoc()
 
 #IRModels
 #Index, IndexeInv
+print("Indexing collection")
 indexCacm, indexInvCacm = evalIRModel.getIndex(), evalIRModel.getIndexinverse()
 weighter = Weighter1(indexCacm, indexInvCacm)
 irModel1 = Vectoriel(weighter, True)
@@ -31,5 +33,6 @@ evalMesure1 = NGCD(k)
 evalIRModel.addMesures(evalMesure1)
 
 # Evaluation 
-evalIRModel.evaluationSimple(0,0)
+print("Evaluation")
+print(evalIRModel.evaluationSimple(0,0))
 
